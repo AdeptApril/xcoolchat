@@ -25,6 +25,7 @@ import com.jgh.androidssh.dialogs.SshConnectFragmentDialog;
 import com.jgh.androidssh.sshutils.ConnectionStatusListener;
 import com.jgh.androidssh.sshutils.ExecTaskCallbackHandler;
 import com.jgh.androidssh.sshutils.SessionController;
+import com.jgh.androidssh.sshutils.SessionUserInfo;
 
 /**
  * Main activity. Connect to SSH server and launch command shell.
@@ -41,6 +42,8 @@ public class MainActivity extends Activity implements OnClickListener {
     private Handler mHandler;
     private Handler mTvHandler;
     private String mLastLine;
+
+    private ConnectionStatusListener mListener;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -59,6 +62,7 @@ public class MainActivity extends Activity implements OnClickListener {
         mButton.setOnClickListener(this);
         mEndSessionBtn.setOnClickListener(this);
         mSftpButton.setOnClickListener(this);
+        this.setListener(mListener);
 
         mConnectStatus.setText("Connect Status: NOT CONNECTED");
         //handlers
@@ -193,7 +197,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
     public void onClick(View v) {
         if (v == mButton) {
-           showDialog();
+           connectToXCool();
 
         } else if (v == mSftpButton) {
             if (SessionController.isConnected()) {
@@ -214,19 +218,20 @@ public class MainActivity extends Activity implements OnClickListener {
 
     }
 
-    void showDialog() {
+    void connectToXCool() {
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        //FragmentTransaction ft = getFragmentManager().beginTransaction();
+        //Fragment prev = getFragmentManager().findFragmentByTag("dialog");
 
-        ft.addToBackStack(null);
+        //ft.addToBackStack(null);
 
         // Create and show the dialog.
-        SshConnectFragmentDialog newFragment = SshConnectFragmentDialog.newInstance();
-        newFragment.setListener(new ConnectionStatusListener() {
+        //SshConnectFragmentDialog newFragment = SshConnectFragmentDialog.newInstance();
+        Log.d(TAG, "Connecting");
+        //newFragment.setListener(new ConnectionStatusListener() {
+        mListener = new ConnectionStatusListener() {
             @Override
             public void onDisconnected() {
-
                 mTvHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -237,16 +242,24 @@ public class MainActivity extends Activity implements OnClickListener {
 
             @Override
             public void onConnected() {
-
                 mTvHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mConnectStatus.setText("Connection Status: CONNECTED");
-                    }
-                });
+                        @Override
+                        public void run() {
+                            mConnectStatus.setText("Connection Status: CONNECTED");
+                        }
+                    });
             }
-        });
+        };
 
-        newFragment.show(ft, "dialog");
+        if(mListener != null)
+            SessionController.getSessionController().setConnectionStatusListener(mListener);
+        SessionController.getSessionController().setUserInfo(new SessionUserInfo("xcool", "xcoolgroup.no-ip.org","reallyunlikely", 50022));
+        SessionController.getSessionController().connect();
+
+        //newFragment.show(ft, "dialog");
+    }
+
+    public void setListener(ConnectionStatusListener listen){
+        mListener = listen;
     }
 }

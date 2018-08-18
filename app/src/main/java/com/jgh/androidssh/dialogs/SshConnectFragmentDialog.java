@@ -71,16 +71,18 @@ public class SshConnectFragmentDialog  extends DialogFragment implements View.On
     @Override
     public void onClick(View v) {
         if (v == mButton) {
-            if (isEditTextEmpty(mUserEdit) || isEditTextEmpty(mHostEdit)
-                    || isEditTextEmpty(mPasswordEdit) || isEditTextEmpty(mPortNumEdit)) {
-                return;
-            }
-            int port = Integer.valueOf(mPortNumEdit.getText().toString());
-            mSUI = new SessionUserInfo(mUserEdit.getText().toString().trim(), mHostEdit.getText()
-                    .toString().trim(),
-                    mPasswordEdit.getText().toString().trim(), port);
+            //if (isEditTextEmpty(mUserEdit) || isEditTextEmpty(mHostEdit)
+            //        || isEditTextEmpty(mPasswordEdit) || isEditTextEmpty(mPortNumEdit)) {
+            //    return;
+            //}
+            //int port = Integer.valueOf(mPortNumEdit.getText().toString());
+            //mSUI = new SessionUserInfo(mUserEdit.getText().toString().trim(), mHostEdit.getText()
+            //        .toString().trim(),
+            //        mPasswordEdit.getText().toString().trim(), port);
+            //mSUI = new SessionUserInfo("xcool", "xcoolgroup.no-ip.org","reallyunlikely", 50022);
 
-            SessionController.getSessionController().setUserInfo(mSUI);
+            //SessionController.getSessionController().setUserInfo(mSUI);
+            SessionController.getSessionController().setUserInfo(new SessionUserInfo("xcool", "xcoolgroup.no-ip.org","reallyunlikely", 50022));
             SessionController.getSessionController().connect();
 
             if(mListener != null)

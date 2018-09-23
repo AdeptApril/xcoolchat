@@ -81,6 +81,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                //TODO: Figure out if it's here or elsewhere that the program gets new text from
+                //the server, and change it to display it in place rather than making a new line.
                 String[] sr = editable.toString().split("\r\n");
                 String s = sr[sr.length - 1];
                 mLastLine = s;
@@ -115,6 +117,8 @@ public class MainActivity extends Activity implements OnClickListener {
                                 public void onComplete(String completeString) {
                                 }
                             };
+                            //TODO: Probably use this set of commands (or just the SessionController
+                            // line, possibly) to send the command for name and color.
                             mCommandEdit.AddLastInput(command);
                             SessionController.getSessionController().executeCommand(mHandler, mCommandEdit, t, command);
                             return false;
